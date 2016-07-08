@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<canvas width="300" height="300"></canvas>
+
+
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="jcanvas.min.js"></script>
+<script>
+$(document).ready(function(){
+	var time_limit = 300,
+		timer_step = 360 / time_limit,
+		i = 0,
+		arrow_counter = timer_step,
+		slice_counter = timer_step,
+		stroke_size = 8,
+		circle_size = 300,
+		radius_size = circle_size/2;
+
+	function draw_arrow(angle = 0)
+	{
+		$('canvas').rotateCanvas({
+			  rotate: angle,
+			  x: circle_size/2, y: circle_size/2
+			}).drawLine({
+				layer: true,
+				name: 'arrow_layer',
+				strokeStyle: '#00B050',
+				strokeWidth: stroke_size,
+				rounded: true,
+				startArrow: true,
+				arrowRadius: 15,
+				arrowAngle: 75,
+				x1: radius_size, y1: 45,
+				x2: radius_size, y2: radius_size
+		});
+	}
+
+	function draw_circle()
+	{
+		$('canvas').drawArc({
+			strokeStyle: '#385D8A',
+			strokeWidth: stroke_size,
+			fillStyle: '#FFF',
+			x: radius_size, y: radius_size,
+			radius: 120,
+		});
+	}
+	draw_circle();
+	draw_arrow();
+
+	var stopwatch = setInterval(function(){
+		draw_circle();
+		// Slice
+		$('canvas').drawSlice({
+			fillStyle: '#f00',
+			x: radius_size, y: radius_size,
+			radius: 105,
+			start: -(i * slice_counter), end: slice_counter
+		});
+
+		// Arrow
+		draw_arrow(arrow_counter);
+
+		arrow_counter = 360 / time_limit;
+		slice_counter = (360 / time_limit);
+
+		i++;
+		//console.log(i + 'seconds');
+
+		if(i >= time_limit){
+			clearInterval(stopwatch);
+			
+			//console.log('end');
+			alert(time_limit/60 + ' minutes has passed.');
+
+			$('canvas').drawArc({
+				strokeWidth: stroke_size,
+				fillStyle: '#F00',
+				x: radius_size, y: radius_size,
+				radius: 105,
+			});
+			draw_arrow(0);
+		}
+		
+	}, 1000);
+});
+</script>
+</body>
+</html>
